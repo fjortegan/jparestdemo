@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
@@ -29,13 +30,45 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         this.userRepository = applicationContext.getBean(UserRepository.class);
     }
 
+    /*
+            Este test simple sólo comprueba que exista el campo Authorization en el encabezado http
+            y que contenga "OK"
+     */
+    protected void simpleDemoFilter(HttpServletRequest request) {
+        String encabezado = request.getHeader("Authorization");
+        if(encabezado != null && encabezado.equals("OK"))
+            simpleSpringAuthentication();
+        else
+            SecurityContextHolder.clearContext();
+    }
+
+    /*
+            Autenticación simple sin recuperar información del token para demostrar mecanismo
+     */
+    private void simpleSpringAuthentication() {
+        List<String> authoritiesText = new ArrayList<>(Arrays.asList("ROLE_ADMIN", "ROLE_GOD"));
+
+        UsernamePasswordAuthenticationToken auth =
+                new UsernamePasswordAuthenticationToken("lalalala", null, sinLambdas(authoritiesText));
+    }
+
+    /* Lista de permisos sin 'lambdas' */
+    private List<SimpleGrantedAuthority> sinLambdas(List<String> textList) {
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        for( String text: textList ) {
+            authorities.add(new SimpleGrantedAuthority(text));
+        }
+        return authorities;
+    }
+
+    /* Lista de permisos usando 'lambdas' */
+    private List<SimpleGrantedAuthority> conLambdas(List<String> textList) {
+        return textList.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+    }
+
+
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-//        String encabezado = httpServletRequest.getHeader("Authorization");
-//        if(encabezado.equals("OK"))
-//            setUpSpringAuthentication();
-//        else
-//            SecurityContextHolder.clearContext();
 
         // TODO: No keys hardcoded!!!
         if(httpServletRequest.getHeader("Authorization")!=null) {
@@ -62,38 +95,12 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 
-//    private void setUpSpringAuthentication(/*Claims claims*/) {
     private void setUpSpringAuthentication(User user) {
-        //List<String> authorities = (List) claims.get("authorities");
-//List<String> authoritiesText = new ArrayList<>(Arrays.asList("ROLE_ADMIN", "ROLE_GOD"));
-//List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-//for( String text: authoritiesText ) {
-//    authorities.add(new SimpleGrantedAuthority(text));
-//}
-//        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(claims.getSubject(), null,
-//                authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
-//        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken("admin", null,
-//                authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
-//        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken("admin", null,
-//                                                        authorities);
-//List<String> authorities = (List) claims.get("authorities");
-//        List<String> authoritiesText = new ArrayList<>(Arrays.asList("ROLE_LOSER", "ROLE_GAMER"));
-//        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-//        for( String text: authoritiesText ) {
-//            authorities.add(new SimpleGrantedAuthority(text));
-//        }
 
-//        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(claims.getSubject(), null,
-//                authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
-//        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken("admin", null,
-//                authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
-//        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken("lalalala", null,
-//                                                        authorities);
         Hibernate.initialize(user.getRoles());
         UsernamePasswordAuthenticationToken auth =
                 new UsernamePasswordAuthenticationToken(user, null,
                             user.getRoles());
         SecurityContextHolder.getContext().setAuthentication(auth);
-
     }
 }

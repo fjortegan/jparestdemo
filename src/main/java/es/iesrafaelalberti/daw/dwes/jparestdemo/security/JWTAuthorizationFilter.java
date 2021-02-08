@@ -42,7 +42,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
             SecurityContextHolder.clearContext();
     }
 
-    /*
+    /*******************************************************************************************
             Autenticación simple sin recuperar información del token para demostrar mecanismo
      */
     private void simpleSpringAuthentication() {
@@ -52,7 +52,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
                 new UsernamePasswordAuthenticationToken("lalalala", null, sinLambdas(authoritiesText));
     }
 
-    /* Lista de permisos sin 'lambdas' */
+    // Lista de permisos sin 'lambdas'
     private List<SimpleGrantedAuthority> sinLambdas(List<String> textList) {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         for( String text: textList ) {
@@ -61,11 +61,12 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         return authorities;
     }
 
-    /* Lista de permisos usando 'lambdas' */
+    // Lista de permisos usando 'lambdas'
     private List<SimpleGrantedAuthority> conLambdas(List<String> textList) {
         return textList.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
 
+    /******************************************************************************************/
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {

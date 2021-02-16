@@ -1,5 +1,6 @@
 package es.iesrafaelalberti.daw.dwes.jparestdemo.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -20,9 +21,10 @@ public class User {
     String password;
     String imageUrl;
     String token;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonBackReference
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "roles_id", referencedColumnName = "id"))
@@ -35,5 +37,6 @@ public class User {
         this.username = username;
         this.password = new BCryptPasswordEncoder().encode(password);
         roles.add(rol);
+        rol.getUsers().add(this);
     }
 }

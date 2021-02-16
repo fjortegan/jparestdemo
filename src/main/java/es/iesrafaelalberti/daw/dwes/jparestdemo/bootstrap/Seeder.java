@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+
 @Component
 public class Seeder implements CommandLineRunner {
 
@@ -37,5 +38,7 @@ public class Seeder implements CommandLineRunner {
         User u1 = userRepository.save(new User("rubo", "quetedoy", r1));
         User u2 = userRepository.save(new User("tere", "tere", r2));
         User u3 = userRepository.save(new User("javier", "pestillo", r3));
+
+
     }
 }

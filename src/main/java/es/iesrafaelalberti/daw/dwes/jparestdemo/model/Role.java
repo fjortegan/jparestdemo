@@ -16,8 +16,8 @@ public class Role implements GrantedAuthority {
     Long id;
     String name;
 
-    @ManyToMany(mappedBy = "roles")
     @EqualsAndHashCode.Exclude
+    @ManyToMany(mappedBy = "roles")
     Set<User> users = new HashSet<>();
 
     public Role() {

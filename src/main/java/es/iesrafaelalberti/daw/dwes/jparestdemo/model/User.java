@@ -35,7 +35,15 @@ public class User {
 
     public User(String username, String password, Role rol) {
         this.username = username;
+        // password is encoded before saving user object
         this.password = new BCryptPasswordEncoder().encode(password);
+        roles.add(rol);
+        // update M:N relation on the other side
+        rol.getUsers().add(this);
+    }
+
+
+    public void addRole(Role rol) {
         roles.add(rol);
         rol.getUsers().add(this);
     }

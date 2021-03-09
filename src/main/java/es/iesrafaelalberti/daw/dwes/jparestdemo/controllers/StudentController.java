@@ -18,6 +18,7 @@ public class StudentController {
 
     @GetMapping(value  = "/students")
     public ResponseEntity<Object> studentList() {
+        ResponseEntity<Object> pepe = new ResponseEntity<>(studentRepository.findAll(), HttpStatus.OK);
         return new ResponseEntity<>(studentRepository.findAll(), HttpStatus.OK);
     }
 

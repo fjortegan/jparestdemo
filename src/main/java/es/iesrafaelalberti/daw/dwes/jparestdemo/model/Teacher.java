@@ -1,10 +1,7 @@
 package es.iesrafaelalberti.daw.dwes.jparestdemo.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -25,6 +22,7 @@ public class Teacher {
 
     @JsonBackReference
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @OneToMany(mappedBy = "tutor", cascade = CascadeType.ALL)
     Set<Student> tutored = new HashSet<>();
 

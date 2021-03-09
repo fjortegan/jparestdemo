@@ -90,7 +90,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
                             .orElseThrow(EntityNotFoundException::new);
                     if(!user.getToken().equals(jwtToken))
                         throw new Exception();
-                    Hibernate.initialize(user.getRoles());
+                    //Hibernate.initialize(user.getRoles());
                     setUpSpringAuthentication(user);
                 } catch (Exception e) {
                     SecurityContextHolder.clearContext();

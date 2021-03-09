@@ -21,7 +21,7 @@ public class User {
     String password;
     String imageUrl;
     String token;
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonBackReference

@@ -1,6 +1,7 @@
 package es.iesrafaelalberti.daw.dwes.jparestdemo.controllers;
 
 import es.iesrafaelalberti.daw.dwes.jparestdemo.model.User;
+import es.iesrafaelalberti.daw.dwes.jparestdemo.repositories.RoleRepository;
 import es.iesrafaelalberti.daw.dwes.jparestdemo.repositories.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -23,7 +24,14 @@ import java.util.stream.Collectors;
 public class UserController {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
+
+    @GetMapping("/rol/{id}")
+    public ResponseEntity<Object> roles(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(roleRepository.findUsers(id), HttpStatus.OK);
+    }
 
     @GetMapping("/logout")
     public ResponseEntity<Object> logout() {

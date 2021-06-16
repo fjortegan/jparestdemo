@@ -24,15 +24,21 @@ import java.util.stream.Collectors;
 
 
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
+    // OJO: NO @Autowired
     private UserRepository userRepository;
 
+    /*******************************************************************************************
+     * Se modifica el constructor para recibir el contexto porque por medidas de seguridad
+     * los filtros se ejecutan en un contexto diferente a la aplicación principal
+     * y se obtiene el repositorio de usuarios del contexto en vez de @Autowired
+     */
     public JWTAuthorizationFilter(ApplicationContext applicationContext) {
         this.userRepository = applicationContext.getBean(UserRepository.class);
     }
 
-    /*
-            Este test simple sólo comprueba que exista el campo Authorization en el encabezado http
-            y que contenga "OK"
+    /*******************************************************************************************
+            Filtro simple comprobando 'OK' en authorization,
+            SÓLO para demostrar mecanismo de autenticación
      */
     protected void simpleDemoFilter(HttpServletRequest request) {
         String encabezado = request.getHeader("Authorization");
@@ -43,7 +49,8 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     }
 
     /*******************************************************************************************
-            Autenticación simple sin recuperar información del token para demostrar mecanismo
+            Autenticación simple sin recuperar información del token,
+            SÓLO para demostrar mecanismo de autenticación
      */
     private void simpleSpringAuthentication() {
         List<String> authoritiesText = new ArrayList<>(Arrays.asList("ROLE_ADMIN", "ROLE_GOD"));
@@ -70,7 +77,6 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-
         // TODO: No keys hardcoded!!!
         if(httpServletRequest.getHeader("Authorization")!=null) {
             if (!httpServletRequest.getHeader("Authorization").startsWith("Bearer ")) {
@@ -81,10 +87,10 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
                     Claims claims = Jwts.parser().setSigningKey("pestillo".getBytes()).parseClaimsJws(jwtToken).getBody();
                     String username = claims.getSubject();
                     User user = userRepository.findUserByUsername(username)
-                            .orElseThrow(() -> new EntityNotFoundException());
+                            .orElseThrow(EntityNotFoundException::new);
                     if(!user.getToken().equals(jwtToken))
                         throw new Exception();
-                    Hibernate.initialize(user.getRoles());
+                    //Hibernate.initialize(user.getRoles());
                     setUpSpringAuthentication(user);
                 } catch (Exception e) {
                     SecurityContextHolder.clearContext();

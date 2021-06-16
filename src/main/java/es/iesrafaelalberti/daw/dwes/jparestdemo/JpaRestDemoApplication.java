@@ -27,18 +27,26 @@ public class JpaRestDemoApplication {
     class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
+            // Disable cors and csrf controls
+            // cors : security measure
+            //        if enabled deny ajax requests from other domains
+            //        browsers implements this type of security too
+            // csrf : cross site request forgery counter measure
+            //        it is not needed in REST API's
             http.cors().and().csrf().disable()
+                    // assign filter for authentication
                     .addFilterAfter(new JWTAuthorizationFilter(getApplicationContext()), UsernamePasswordAuthenticationFilter.class)
+                    // define authorization patterns
                     .authorizeRequests()
                         .antMatchers("/login/**").permitAll()
-                        .antMatchers("/teachers/agesum**").permitAll()
+                        .antMatchers("/rol/**").permitAll()
                         .antMatchers("/logout/**").authenticated()
                         .antMatchers("/students/**").authenticated()
                         .antMatchers("/teachers/**").hasAnyRole("ADMIN", "GOD")
                         .antMatchers("/").authenticated();
-
         }
 
+        // Fakes authentication (for testing purposes only)
 //        @Override
 //        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 //            auth.inMemoryAuthentication()

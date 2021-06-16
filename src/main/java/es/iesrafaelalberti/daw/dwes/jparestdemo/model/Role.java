@@ -2,6 +2,7 @@ package es.iesrafaelalberti.daw.dwes.jparestdemo.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -16,8 +17,9 @@ public class Role implements GrantedAuthority {
     Long id;
     String name;
 
-    @ManyToMany(mappedBy = "roles")
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @ManyToMany(mappedBy = "roles")
     Set<User> users = new HashSet<>();
 
     public Role() {

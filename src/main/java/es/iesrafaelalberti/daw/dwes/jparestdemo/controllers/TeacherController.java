@@ -27,4 +27,9 @@ public class TeacherController {
                                              .orElseThrow(() -> new EntityNotFoundException(id.toString()));
         return new ResponseEntity<>( new Object[] { myTeacher, myTeacher.getTutored() } , HttpStatus.OK);
     }
+
+    @GetMapping(value = "/teachers/agesum")
+    public ResponseEntity<Object> teacherAgeSum() {
+        return new ResponseEntity<>(teacherRepository.ageSumStudents(), HttpStatus.OK);
+    }
 }

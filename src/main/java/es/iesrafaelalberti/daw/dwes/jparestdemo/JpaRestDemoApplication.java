@@ -31,6 +31,7 @@ public class JpaRestDemoApplication {
                     .addFilterAfter(new JWTAuthorizationFilter(getApplicationContext()), UsernamePasswordAuthenticationFilter.class)
                     .authorizeRequests()
                         .antMatchers("/login/**").permitAll()
+                        .antMatchers("/teachers/agesum**").permitAll()
                         .antMatchers("/logout/**").authenticated()
                         .antMatchers("/students/**").authenticated()
                         .antMatchers("/teachers/**").hasAnyRole("ADMIN", "GOD")

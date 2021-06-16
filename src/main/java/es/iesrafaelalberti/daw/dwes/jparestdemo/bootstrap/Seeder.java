@@ -26,6 +26,7 @@ public class Seeder implements CommandLineRunner {
 
     @Override
     public void run(String[] args) {
+        // Create sample entities for testing purposes
         Teacher p1 = teacherRepository.save(new Teacher("Juan", "Lopez", 6.2f));
         Teacher p2 = teacherRepository.save(new Teacher("Javier", "Ortega", 0.2f));
         Student s1 = studentRepository.save(new Student("Juan", "Perez", 5, p1));
